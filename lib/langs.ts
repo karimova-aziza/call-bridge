@@ -1,7 +1,7 @@
 export const LANGS = {
   en: { label: "English", name: "English", voice: "en-US" },
   ru: { label: "Русский", name: "Russian", voice: "ru-RU" },
-  uz: { label: "O'zbekcha", name: "Uzbek", voice: "uz-UZ" },
+  uz: { label: "Oʻzbekcha", name: "Uzbek", voice: "uz-UZ" },
 } as const;
 
 export type LangCode = keyof typeof LANGS;

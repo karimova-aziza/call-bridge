@@ -29,6 +29,11 @@ type Strings = {
   recapWorking: string;
   micDenied: string;
   people: string;
+  hideVideo: string;
+  showVideo: string;
+  copyRecap: string;
+  recapCopied: string;
+  recapFor: string;
 };
 
 export const UI: Record<LangCode, Strings> = {
@@ -55,6 +60,11 @@ export const UI: Record<LangCode, Strings> = {
     recapWorking: "Writing the recap",
     micDenied: "The microphone is blocked. Allow it in your browser settings, then reload.",
     people: "In this call",
+    hideVideo: "Hide video",
+    showVideo: "Show video",
+    copyRecap: "Copy",
+    recapCopied: "Copied",
+    recapFor: "Written for you to keep or send on",
   },
   ru: {
     appName: "Call Bridge",
@@ -79,29 +89,39 @@ export const UI: Record<LangCode, Strings> = {
     recapWorking: "Готовлю итог",
     micDenied: "Микрофон заблокирован. Разрешите доступ в настройках браузера и обновите страницу.",
     people: "Участники",
+    hideVideo: "Скрыть видео",
+    showVideo: "Показать видео",
+    copyRecap: "Скопировать",
+    recapCopied: "Скопировано",
+    recapFor: "Можно сохранить или переслать",
   },
   uz: {
     appName: "Call Bridge",
-    tagline: "Har kim o'z tilida gapiradi. Hamma bir-birini tushunadi.",
+    tagline: "Har kim oʻz tilida gapiradi. Hamma bir-birini tushunadi.",
     yourName: "Ismingiz",
     yourLanguage: "Tilingiz",
     start: "Suhbatni boshlash",
-    join: "Qo'shilish",
+    join: "Qoʻshilish",
     codeLabel: "Suhbat kodi",
     codePlaceholder: "masalan K4M2",
     inviteTitle: "Buni boshqalarga yuboring",
-    inviteBody: "Ular havolani ochadi, tilini tanlaydi va qo'shiladi. Ro'yxatdan o'tish shart emas.",
+    inviteBody: "Ular havolani ochadi, tilini tanlaydi va qoʻshiladi. Roʻyxatdan oʻtish shart emas.",
     copy: "Havolani nusxalash",
     copied: "Nusxalandi",
     hold: "Gapirish uchun bosib turing",
-    speaking: "Eshitayapman — tugatgach qo'yib yuboring",
+    speaking: "Eshitayapman — tugatgach qoʻyib yuboring",
     sending: "Tarjima qilinmoqda",
-    waiting: "Boshqalar qo'shilishini kutyapmiz",
+    waiting: "Boshqalar qoʻshilishini kutyapmiz",
     nobodyYet: "Hali hech narsa aytilmadi. Tugmani bosib turing va gapiring.",
     endCall: "Yakunlash va xulosani olish",
     recapTitle: "Suhbat xulosasi",
     recapWorking: "Xulosa tayyorlanmoqda",
     micDenied: "Mikrofon bloklangan. Brauzer sozlamalarida ruxsat bering va sahifani yangilang.",
     people: "Ishtirokchilar",
+    hideVideo: "Videoni yashirish",
+    showVideo: "Videoni koʻrsatish",
+    copyRecap: "Nusxalash",
+    recapCopied: "Nusxalandi",
+    recapFor: "Saqlab qoʻyish yoki yuborish uchun",
   },
 };

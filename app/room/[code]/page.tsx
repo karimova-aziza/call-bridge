@@ -54,6 +54,9 @@ function Room() {
   const [error, setError] = useState("");
   const [recap, setRecap] = useState("");
   const [ending, setEnding] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [videoUrl, setVideoUrl] = useState("");
+  const [showVideo, setShowVideo] = useState(true);
 
   const cursor = useRef(0);
   const recorder = useRef<MediaRecorder | null>(null);
@@ -68,6 +71,18 @@ function Room() {
       body: JSON.stringify({ code, name, lang }),
     }).catch(() => {});
   }, [code, name, lang]);
+
+  // Ask for a video room. If this fails the call still works without it.
+  useEffect(() => {
+    fetch("/api/video", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code }),
+    })
+      .then((r) => r.json())
+      .then((d) => d.url && setVideoUrl(d.url))
+      .catch(() => {});
+  }, [code]);
 
   // Poll for new turns. Simple on purpose: no websockets to maintain, and a
   // 1.5s delay is invisible next to the translation time anyway.
@@ -188,6 +203,16 @@ function Room() {
 
       {error && <div className="notice">{error}</div>}
 
+      {videoUrl && showVideo && (
+        <div className="video">
+          <iframe
+            src={`${videoUrl}?userName=${encodeURIComponent(name)}`}
+            allow="camera; microphone; autoplay; fullscreen"
+            title="Video"
+          />
+        </div>
+      )}
+
       <div className="feed">
         {!messages.length && (
           <p className="empty">{people.length < 2 ? t.waiting : t.nobodyYet}</p>
@@ -206,9 +231,20 @@ function Room() {
         })}
 
         {recap && (
-          <section className="panel">
-            <h2 style={{ marginTop: 0, fontSize: 18 }}>{t.recapTitle}</h2>
+          <section className="letter">
+            <div className="letter-head">{t.recapTitle}</div>
             <div className="recap">{recap}</div>
+            <div className="letter-foot">
+              <span>{t.recapFor}</span>
+              <button
+                onClick={() => {
+                  navigator.clipboard?.writeText(recap);
+                  setCopied(true);
+                }}
+              >
+                {copied ? t.recapCopied : t.copyRecap}
+              </button>
+            </div>
           </section>
         )}
         <div ref={feedEnd} />
@@ -228,6 +264,11 @@ function Room() {
           {label}
         </button>
         <div className="endline">
+          {videoUrl && (
+            <button onClick={() => setShowVideo((v) => !v)}>
+              {showVideo ? t.hideVideo : t.showVideo}
+            </button>
+          )}
           <button onClick={finish} disabled={ending || !messages.length}>
             {ending ? t.recapWorking : t.endCall}
           </button>
