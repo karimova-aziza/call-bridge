@@ -9,11 +9,9 @@ type Strings = {
   join: string;
   codeLabel: string;
   codePlaceholder: string;
-  inviteTitle: string;
-  inviteBody: string;
   copy: string;
   copied: string;
-  listening: string;
+  hold: string;
   speaking: string;
   sending: string;
   waiting: string;
@@ -23,14 +21,10 @@ type Strings = {
   recapWorking: string;
   micDenied: string;
   people: string;
-  hideVideo: string;
-  showVideo: string;
   copyRecap: string;
   recapCopied: string;
   recapFor: string;
-  mute: string;
-  unmute: string;
-  autoListening: string;
+  speakingSuffix: string;
 };
 
 export const UI: Record<LangCode, Strings> = {
@@ -43,28 +37,22 @@ export const UI: Record<LangCode, Strings> = {
     join: "Join",
     codeLabel: "Call code",
     codePlaceholder: "e.g. K4M2",
-    inviteTitle: "Send this to the others",
-    inviteBody: "They open the link, pick their language, and join. No account needed.",
     copy: "Copy link",
     copied: "Copied",
-    listening: "Listening…",
-    speaking: "Speaking — pause when done",
-    sending: "Translating",
-    waiting: "Waiting for the others to join",
-    nobodyYet: "Nothing said yet. Just start speaking.",
-    endCall: "End call and get the recap",
+    hold: "Hold to speak",
+    speaking: "Speaking — release when done",
+    sending: "Translating…",
+    waiting: "Waiting for others to join",
+    nobodyYet: "Hold the button and speak.",
+    endCall: "End call & get recap",
     recapTitle: "Recap of the call",
-    recapWorking: "Writing the recap",
-    micDenied: "The microphone is blocked. Allow it in your browser settings, then reload.",
+    recapWorking: "Writing the recap…",
+    micDenied: "Microphone blocked. Allow it in browser settings and reload.",
     people: "In this call",
-    hideVideo: "Hide video",
-    showVideo: "Show video",
     copyRecap: "Copy",
     recapCopied: "Copied",
-    recapFor: "Written for you to keep or send on",
-    mute: "Mute",
-    unmute: "Unmute",
-    autoListening: "Auto — speaks when it hears you",
+    recapFor: "Keep this or send it on",
+    speakingSuffix: "is speaking",
   },
   ru: {
     appName: "Call Bridge",
@@ -75,28 +63,22 @@ export const UI: Record<LangCode, Strings> = {
     join: "Присоединиться",
     codeLabel: "Код разговора",
     codePlaceholder: "например K4M2",
-    inviteTitle: "Отправьте это остальным",
-    inviteBody: "Они откроют ссылку, выберут язык и присоединятся. Регистрация не нужна.",
     copy: "Скопировать ссылку",
     copied: "Скопировано",
-    listening: "Слушаю…",
-    speaking: "Говорите — сделайте паузу, когда закончите",
-    sending: "Перевожу",
+    hold: "Нажмите и говорите",
+    speaking: "Говорите — отпустите, когда закончите",
+    sending: "Перевожу…",
     waiting: "Ждём остальных участников",
-    nobodyYet: "Пока ничего не сказано. Просто начните говорить.",
+    nobodyYet: "Нажмите кнопку и говорите.",
     endCall: "Завершить и получить итог",
     recapTitle: "Итог разговора",
-    recapWorking: "Готовлю итог",
-    micDenied: "Микрофон заблокирован. Разрешите доступ в настройках браузера и обновите страницу.",
+    recapWorking: "Готовлю итог…",
+    micDenied: "Микрофон заблокирован. Разрешите доступ в настройках и обновите страницу.",
     people: "Участники",
-    hideVideo: "Скрыть видео",
-    showVideo: "Показать видео",
     copyRecap: "Скопировать",
     recapCopied: "Скопировано",
-    recapFor: "Можно сохранить или переслать",
-    mute: "Выключить микрофон",
-    unmute: "Включить микрофон",
-    autoListening: "Авто — переводит, когда вас слышит",
+    recapFor: "Сохраните или перешлите",
+    speakingSuffix: "говорит",
   },
   uz: {
     appName: "Call Bridge",
@@ -107,27 +89,21 @@ export const UI: Record<LangCode, Strings> = {
     join: "Qo\u02bbshilish",
     codeLabel: "Suhbat kodi",
     codePlaceholder: "masalan K4M2",
-    inviteTitle: "Buni boshqalarga yuboring",
-    inviteBody: "Ular havolani ochadi, tilini tanlaydi va qo\u02bbshiladi. Ro\u02bbyx atdan o\u02bbtish shart emas.",
     copy: "Havolani nusxalash",
     copied: "Nusxalandi",
-    listening: "Eshitayapman…",
-    speaking: "Gapiring — tugatgach to\u02bbxtang",
-    sending: "Tarjima qilinmoqda",
+    hold: "Bosib turing va gapiring",
+    speaking: "Gapiring — tugatgach qo\u02bbying",
+    sending: "Tarjima qilinmoqda…",
     waiting: "Boshqalar qo\u02bbshilishini kutyapmiz",
-    nobodyYet: "Hali hech narsa aytilmadi. Gapira boshlang.",
-    endCall: "Yakunlash va xulosani olish",
+    nobodyYet: "Tugmani bosib turing va gapiring.",
+    endCall: "Yakunlash va xulosa olish",
     recapTitle: "Suhbat xulosasi",
-    recapWorking: "Xulosa tayyorlanmoqda",
+    recapWorking: "Xulosa tayyorlanmoqda…",
     micDenied: "Mikrofon bloklangan. Brauzer sozlamalarida ruxsat bering va sahifani yangilang.",
     people: "Ishtirokchilar",
-    hideVideo: "Videoni yashirish",
-    showVideo: "Videoni ko\u02bbrsatish",
     copyRecap: "Nusxalash",
     recapCopied: "Nusxalandi",
     recapFor: "Saqlab qo\u02bbyish yoki yuborish uchun",
-    mute: "Mikrofonni o\u02bbchirish",
-    unmute: "Mikrofonni yoqish",
-    autoListening: "Avto — sizni eshitganda tarjima qiladi",
+    speakingSuffix: "gapirmoqda",
   },
 };

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getMessages, getParticipants } from "@/lib/store";
+import { getMessages, getParticipants, getSpeaking } from "@/lib/store";
 
 export async function GET(
   req: Request,
@@ -8,10 +8,16 @@ export async function GET(
   const { code } = await params;
   const since = Number(new URL(req.url).searchParams.get("since") ?? 0);
 
-  const [messages, participants] = await Promise.all([
+  const [messages, participants, speaking] = await Promise.all([
     getMessages(code.toUpperCase(), since),
     getParticipants(code.toUpperCase()),
+    getSpeaking(code.toUpperCase()),
   ]);
 
-  return NextResponse.json({ messages, participants, next: since + messages.length });
+  return NextResponse.json({
+    messages,
+    participants,
+    speaking,
+    next: since + messages.length,
+  });
 }

@@ -12,13 +12,6 @@ export type Message = {
 
 export type Participant = { name: string; lang: LangCode };
 
-/*
- * Rooms live in Upstash Redis so that every serverless function sees the same
- * data. If the Upstash env vars are missing we fall back to an in-memory map,
- * which is fine for `npm run dev` on one machine but will NOT work once
- * deployed (each request may hit a different instance).
- */
-
 const hasRedis =
   !!process.env.UPSTASH_REDIS_REST_URL && !!process.env.UPSTASH_REDIS_REST_TOKEN;
 
@@ -30,7 +23,7 @@ const redis = hasRedis
   : null;
 
 const memory = new Map<string, unknown>();
-const TTL = 60 * 60 * 6; // rooms expire after 6 hours
+const TTL = 60 * 60 * 6;
 
 async function rpush(key: string, value: unknown) {
   if (redis) {
@@ -82,6 +75,36 @@ export async function getParticipants(code: string): Promise<Participant[]> {
     name,
     lang: lang as LangCode,
   }));
+}
+
+/*
+ * Who is currently holding the talk button. Auto-expires in 30 seconds so
+ * a crash doesn't leave someone as "speaking" forever.
+ */
+export async function setSpeaking(code: string, name: string | null) {
+  const key = `room:${code}:speaking`;
+  if (redis) {
+    if (name) {
+      await redis.set(key, name, { ex: 30 });
+    } else {
+      await redis.del(key);
+    }
+    return;
+  }
+  if (name) {
+    memory.set(key, name);
+  } else {
+    memory.delete(key);
+  }
+}
+
+export async function getSpeaking(code: string): Promise<string | null> {
+  const key = `room:${code}:speaking`;
+  if (redis) {
+    const val = await redis.get<string>(key);
+    return val ?? null;
+  }
+  return (memory.get(key) as string) ?? null;
 }
 
 export const storeIsPersistent = hasRedis;
