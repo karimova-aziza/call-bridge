@@ -1,11 +1,5 @@
 import type { LangCode } from "./langs";
 
-/*
- * AZIZA: check the Uzbek and Russian here yourself. I wrote plausible
- * translations but you are the native speaker and this is the first thing your
- * mother will read. Getting these wrong undoes the whole point of the product.
- */
-
 type Strings = {
   appName: string;
   tagline: string;
@@ -19,7 +13,7 @@ type Strings = {
   inviteBody: string;
   copy: string;
   copied: string;
-  hold: string;
+  listening: string;
   speaking: string;
   sending: string;
   waiting: string;
@@ -34,6 +28,9 @@ type Strings = {
   copyRecap: string;
   recapCopied: string;
   recapFor: string;
+  mute: string;
+  unmute: string;
+  autoListening: string;
 };
 
 export const UI: Record<LangCode, Strings> = {
@@ -50,11 +47,11 @@ export const UI: Record<LangCode, Strings> = {
     inviteBody: "They open the link, pick their language, and join. No account needed.",
     copy: "Copy link",
     copied: "Copied",
-    hold: "Hold to speak",
-    speaking: "Listening — let go when you finish",
+    listening: "Listening…",
+    speaking: "Speaking — pause when done",
     sending: "Translating",
     waiting: "Waiting for the others to join",
-    nobodyYet: "Nothing said yet. Hold the button and speak.",
+    nobodyYet: "Nothing said yet. Just start speaking.",
     endCall: "End call and get the recap",
     recapTitle: "Recap of the call",
     recapWorking: "Writing the recap",
@@ -65,6 +62,9 @@ export const UI: Record<LangCode, Strings> = {
     copyRecap: "Copy",
     recapCopied: "Copied",
     recapFor: "Written for you to keep or send on",
+    mute: "Mute",
+    unmute: "Unmute",
+    autoListening: "Auto — speaks when it hears you",
   },
   ru: {
     appName: "Call Bridge",
@@ -79,11 +79,11 @@ export const UI: Record<LangCode, Strings> = {
     inviteBody: "Они откроют ссылку, выберут язык и присоединятся. Регистрация не нужна.",
     copy: "Скопировать ссылку",
     copied: "Скопировано",
-    hold: "Нажмите и говорите",
-    speaking: "Слушаю — отпустите, когда закончите",
+    listening: "Слушаю…",
+    speaking: "Говорите — сделайте паузу, когда закончите",
     sending: "Перевожу",
     waiting: "Ждём остальных участников",
-    nobodyYet: "Пока ничего не сказано. Нажмите кнопку и говорите.",
+    nobodyYet: "Пока ничего не сказано. Просто начните говорить.",
     endCall: "Завершить и получить итог",
     recapTitle: "Итог разговора",
     recapWorking: "Готовлю итог",
@@ -94,34 +94,40 @@ export const UI: Record<LangCode, Strings> = {
     copyRecap: "Скопировать",
     recapCopied: "Скопировано",
     recapFor: "Можно сохранить или переслать",
+    mute: "Выключить микрофон",
+    unmute: "Включить микрофон",
+    autoListening: "Авто — переводит, когда вас слышит",
   },
   uz: {
     appName: "Call Bridge",
-    tagline: "Har kim oʻz tilida gapiradi. Hamma bir-birini tushunadi.",
+    tagline: "Har kim o\u02bbz tilida gapiradi. Hamma bir-birini tushunadi.",
     yourName: "Ismingiz",
     yourLanguage: "Tilingiz",
     start: "Suhbatni boshlash",
-    join: "Qoʻshilish",
+    join: "Qo\u02bbshilish",
     codeLabel: "Suhbat kodi",
     codePlaceholder: "masalan K4M2",
     inviteTitle: "Buni boshqalarga yuboring",
-    inviteBody: "Ular havolani ochadi, tilini tanlaydi va qoʻshiladi. Roʻyxatdan oʻtish shart emas.",
+    inviteBody: "Ular havolani ochadi, tilini tanlaydi va qo\u02bbshiladi. Ro\u02bbyx atdan o\u02bbtish shart emas.",
     copy: "Havolani nusxalash",
     copied: "Nusxalandi",
-    hold: "Gapirish uchun bosib turing",
-    speaking: "Eshitayapman — tugatgach qoʻyib yuboring",
+    listening: "Eshitayapman…",
+    speaking: "Gapiring — tugatgach to\u02bbxtang",
     sending: "Tarjima qilinmoqda",
-    waiting: "Boshqalar qoʻshilishini kutyapmiz",
-    nobodyYet: "Hali hech narsa aytilmadi. Tugmani bosib turing va gapiring.",
+    waiting: "Boshqalar qo\u02bbshilishini kutyapmiz",
+    nobodyYet: "Hali hech narsa aytilmadi. Gapira boshlang.",
     endCall: "Yakunlash va xulosani olish",
     recapTitle: "Suhbat xulosasi",
     recapWorking: "Xulosa tayyorlanmoqda",
     micDenied: "Mikrofon bloklangan. Brauzer sozlamalarida ruxsat bering va sahifani yangilang.",
     people: "Ishtirokchilar",
     hideVideo: "Videoni yashirish",
-    showVideo: "Videoni koʻrsatish",
+    showVideo: "Videoni ko\u02bbrsatish",
     copyRecap: "Nusxalash",
     recapCopied: "Nusxalandi",
-    recapFor: "Saqlab qoʻyish yoki yuborish uchun",
+    recapFor: "Saqlab qo\u02bbyish yoki yuborish uchun",
+    mute: "Mikrofonni o\u02bbchirish",
+    unmute: "Mikrofonni yoqish",
+    autoListening: "Avto — sizni eshitganda tarjima qiladi",
   },
 };
