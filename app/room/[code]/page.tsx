@@ -5,12 +5,15 @@ import { useParams, useSearchParams } from "next/navigation";
 import { LANGS, isLang, type LangCode } from "@/lib/langs";
 import { UI } from "@/lib/ui";
 
+type Term = { word: string; explanation: string };
+
 type Msg = {
   id: string;
   speaker: string;
   sourceLang: LangCode;
   original: string;
   translations: Partial<Record<LangCode, string>>;
+  terms?: Partial<Record<LangCode, Term[]>>;
 };
 
 type Person = { name: string; lang: LangCode };
@@ -54,12 +57,18 @@ function Room() {
   const [ending, setEnding] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  // Which term chip is currently expanded — tracks by message id + word
+  const [expandedTerm, setExpandedTerm] = useState<{
+    msgId: string;
+    word: string;
+    explanation: string;
+  } | null>(null);
+
   const cursor = useRef(0);
   const recorder = useRef<MediaRecorder | null>(null);
   const chunks = useRef<BlobPart[]>([]);
   const feedEnd = useRef<HTMLDivElement>(null);
 
-  // Join the room
   useEffect(() => {
     fetch("/api/join", {
       method: "POST",
@@ -68,7 +77,6 @@ function Room() {
     }).catch(() => {});
   }, [code, name, lang]);
 
-  // Poll for new messages and who is currently speaking
   useEffect(() => {
     let alive = true;
     const tick = async () => {
@@ -86,7 +94,7 @@ function Room() {
             speak(m.translations[lang] ?? m.original, lang);
           }
         }
-      } catch { /* transient network blip, next tick will catch up */ }
+      } catch { /* transient */ }
     };
     tick();
     const id = setInterval(tick, 1500);
@@ -97,7 +105,6 @@ function Room() {
     feedEnd.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages.length, whoSpeaking]);
 
-  // Tell others you are holding / have released the button
   const broadcastSpeaking = useCallback((active: boolean) => {
     fetch("/api/speaking", {
       method: "POST",
@@ -175,7 +182,6 @@ function Room() {
     callState === "busy" ? t.sending :
     t.hold;
 
-  // Only show who is speaking if it's NOT this user
   const otherSpeaking = whoSpeaking && whoSpeaking !== name ? whoSpeaking : null;
 
   return (
@@ -209,36 +215,74 @@ function Room() {
             ? m.original
             : (m.translations[lang] ?? m.original);
           const showOriginal = !mine && m.original !== shown;
+          const myTerms = m.terms?.[lang] ?? [];
 
           return (
-            <div
-              key={m.id}
-              className={`bubble ${
-                mine
-                  ? "bubble--mine"
-                  : `bubble--theirs bubble--${m.sourceLang}`
-              }`}
-            >
-              {!mine && (
-                <div className="bubble-speaker">
-                  {m.speaker} · {LANGS[m.sourceLang].label}
+            <div key={m.id} className="bubble-group">
+              {/* Main bubble */}
+              <div
+                className={`bubble ${
+                  mine
+                    ? "bubble--mine"
+                    : `bubble--theirs bubble--${m.sourceLang}`
+                }`}
+              >
+                {!mine && (
+                  <div className="bubble-speaker">
+                    {m.speaker} · {LANGS[m.sourceLang].label}
+                  </div>
+                )}
+                <div className="bubble-text">{shown}</div>
+                {showOriginal && (
+                  <div className="bubble-original">{m.original}</div>
+                )}
+              </div>
+
+              {/* Vocabulary chips — only shown when there are terms for this user's language */}
+              {myTerms.length > 0 && (
+                <div className={`terms ${mine ? "terms--mine" : ""}`}>
+                  {myTerms.map((term) => {
+                    const isOpen =
+                      expandedTerm?.msgId === m.id &&
+                      expandedTerm?.word === term.word;
+                    return (
+                      <button
+                        key={term.word}
+                        className={`term-chip${isOpen ? " term-chip--open" : ""}`}
+                        onClick={() =>
+                          setExpandedTerm(
+                            isOpen
+                              ? null
+                              : {
+                                  msgId: m.id,
+                                  word: term.word,
+                                  explanation: term.explanation,
+                                },
+                          )
+                        }
+                      >
+                        {term.word}
+                      </button>
+                    );
+                  })}
+
+                  {/* Expanded explanation card */}
+                  {expandedTerm?.msgId === m.id && (
+                    <div className="term-card">
+                      <strong>{expandedTerm.word}</strong>{" "}
+                      — {expandedTerm.explanation}
+                    </div>
+                  )}
                 </div>
-              )}
-              <div className="bubble-text">{shown}</div>
-              {showOriginal && (
-                <div className="bubble-original">{m.original}</div>
               )}
             </div>
           );
         })}
 
-        {/* "X is speaking…" indicator shown to everyone else while button held */}
         {otherSpeaking && (
           <div className="speaking-pill">
             <span className="speaking-dot" />
-            <span>
-              {otherSpeaking} {t.speakingSuffix}
-            </span>
+            <span>{otherSpeaking} {t.speakingSuffix}</span>
             <span className="speaking-anim">···</span>
           </div>
         )}

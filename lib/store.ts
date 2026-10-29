@@ -1,6 +1,11 @@
 import { Redis } from "@upstash/redis";
 import type { LangCode } from "./langs";
 
+export type Term = {
+  word: string;
+  explanation: string;
+};
+
 export type Message = {
   id: string;
   ts: number;
@@ -8,6 +13,7 @@ export type Message = {
   sourceLang: LangCode;
   original: string;
   translations: Partial<Record<LangCode, string>>;
+  terms?: Partial<Record<LangCode, Term[]>>;
 };
 
 export type Participant = { name: string; lang: LangCode };
@@ -77,10 +83,6 @@ export async function getParticipants(code: string): Promise<Participant[]> {
   }));
 }
 
-/*
- * Who is currently holding the talk button. Auto-expires in 30 seconds so
- * a crash doesn't leave someone as "speaking" forever.
- */
 export async function setSpeaking(code: string, name: string | null) {
   const key = `room:${code}:speaking`;
   if (redis) {
@@ -91,11 +93,8 @@ export async function setSpeaking(code: string, name: string | null) {
     }
     return;
   }
-  if (name) {
-    memory.set(key, name);
-  } else {
-    memory.delete(key);
-  }
+  if (name) memory.set(key, name);
+  else memory.delete(key);
 }
 
 export async function getSpeaking(code: string): Promise<string | null> {

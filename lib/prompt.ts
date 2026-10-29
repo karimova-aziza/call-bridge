@@ -20,12 +20,26 @@ non-academic parent understands the real-world consequence:
 - "GPA" → keep the abbreviation but add a short plain explanation.
 `.trim();
 
+/*
+ * This is the core of the product.
+ *
+ * One LLM call does TWO things at once — no extra latency:
+ *   1. Translates the spoken text into every other language in the room.
+ *   2. Identifies 0–3 key terms a non-native speaker might not know, and
+ *      explains each one plainly in every target language.
+ *
+ * Terms to flag: institutional vocabulary, acronyms, culturally specific
+ * phrases. Skip common words and anything already in the glossary.
+ * When in doubt, return fewer terms rather than more — a chip that teaches
+ * something is good; a chip for an obvious word is noise.
+ */
 export function translationPrompt(
   text: string,
   sourceLang: LangCode,
   targets: LangCode[],
 ) {
   const targetList = targets.map((t) => `"${t}": "${LANGS[t].name}"`).join(", ");
+  const targetKeys = targets.map((t) => `"${t}"`).join(", ");
 
   return `You are interpreting a live conversation between a university student's parent and someone from the student's institution.
 
@@ -35,20 +49,44 @@ The speaker just said the following in ${LANGS[sourceLang].name}:
 ${text}
 """
 
-Translate it into each of these languages: ${targetList}
+Do two things:
+
+TASK 1 — TRANSLATE
+Translate the text into each of these languages: ${targetList}
 
 Rules:
-- Translate meaning, not words. This is speech — keep it natural and spoken.
+- Translate meaning, not words. This is live speech — keep it natural.
 - Keep the speaker's emotional register. Warmth or worry should carry across.
-- Never add information, never answer on the speaker's behalf.
+- Never add information or answer on the speaker's behalf.
 - Keep it roughly the same length as the original.
 - Numbers, dates and names must carry across exactly.
-- If the speech is unclear or cut off, translate what is there.
 
 ${GLOSSARY}
 
-Respond with ONLY a JSON object mapping each language code to its translation.
-No markdown, no code fences, no commentary. Example: {"en": "...", "ru": "..."}`;
+TASK 2 — EXTRACT KEY TERMS
+Identify 0 to 3 terms from this turn that a non-native speaker or parent might not understand. Only flag: institutional vocabulary, acronyms, degree/credit terminology, financial terms, or culturally specific phrases. Do NOT flag common conversational words.
+
+For each term, provide:
+- The term itself in each target language (as it appears in your translation)
+- A plain 1–2 sentence explanation in each target language, written for a parent with no university background
+
+If no important terms exist in this turn, omit "terms" from your response entirely.
+
+Respond with ONLY a valid JSON object. No markdown, no code fences, no commentary.
+
+Required shape (fill in all ${targetKeys} keys):
+{
+  "en": "<translation in English if English is a target>",
+  "ru": "<translation in Russian if Russian is a target>",
+  "uz": "<translation in Uzbek if Uzbek is a target>",
+  "terms": {
+    "en": [{"word": "<term>", "explanation": "<plain explanation in English>"}],
+    "ru": [{"word": "<term>", "explanation": "<plain explanation in Russian>"}],
+    "uz": [{"word": "<term>", "explanation": "<plain explanation in Uzbek>"}]
+  }
+}
+
+Only include keys for the target languages listed above. Omit "terms" entirely when there are no important terms.`;
 }
 
 export function summaryPrompt(transcript: string, target: LangCode) {
@@ -73,7 +111,7 @@ What needs to happen next
 
 Rules:
 - No markdown. No asterisks. No dashes used as bullets.
-- Every deadline or date mentioned must appear under "What needs to happen next".
+- Every deadline or date mentioned must appear under the third section.
 - If a section had nothing in it, write one plain sentence saying so.
 - Do not invent or assume anything not said in the transcript.
 - If an amount of money was mentioned, include the currency.
