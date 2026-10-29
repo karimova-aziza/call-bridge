@@ -9,13 +9,16 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      {/* suppressHydrationWarning: browser extensions like Grammarly inject
+          attributes into <body> before React loads, which triggers a harmless
+          dev-mode warning. */}
+      <body suppressHydrationWarning>{children}</body>
     </html>
   );
 }

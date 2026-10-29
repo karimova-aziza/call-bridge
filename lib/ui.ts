@@ -3,6 +3,9 @@ import type { LangCode } from "./langs";
 type Strings = {
   appName: string;
   tagline: string;
+  sub: string;
+  newCall: string;
+  haveCode: string;
   yourName: string;
   yourLanguage: string;
   start: string;
@@ -31,12 +34,15 @@ export const UI: Record<LangCode, Strings> = {
   en: {
     appName: "Call Bridge",
     tagline: "Everyone speaks their own language. Everyone understands.",
+    sub: "No app. No account. Just share the code.",
+    newCall: "Start a new call",
+    haveCode: "Or join with a code",
     yourName: "Your name",
     yourLanguage: "Your language",
     start: "Start a call",
     join: "Join",
     codeLabel: "Call code",
-    codePlaceholder: "e.g. K4M2",
+    codePlaceholder: "K4M2",
     copy: "Copy link",
     copied: "Copied",
     hold: "Hold to speak",
@@ -57,12 +63,15 @@ export const UI: Record<LangCode, Strings> = {
   ru: {
     appName: "Call Bridge",
     tagline: "Каждый говорит на своём языке. Все понимают друг друга.",
+    sub: "Без приложений и регистрации. Просто отправьте код.",
+    newCall: "Новый разговор",
+    haveCode: "Или войдите по коду",
     yourName: "Ваше имя",
     yourLanguage: "Ваш язык",
     start: "Начать разговор",
-    join: "Присоединиться",
+    join: "Войти",
     codeLabel: "Код разговора",
-    codePlaceholder: "например K4M2",
+    codePlaceholder: "K4M2",
     copy: "Скопировать ссылку",
     copied: "Скопировано",
     hold: "Нажмите и говорите",
@@ -83,16 +92,19 @@ export const UI: Record<LangCode, Strings> = {
   uz: {
     appName: "Call Bridge",
     tagline: "Har kim o\u02bbz tilida gapiradi. Hamma bir-birini tushunadi.",
+    sub: "Ilova ham, ro\u02bbyxatdan o\u02bbtish ham shart emas. Shunchaki kodni yuboring.",
+    newCall: "Yangi suhbat",
+    haveCode: "Yoki kod bilan qo\u02bbshiling",
     yourName: "Ismingiz",
     yourLanguage: "Tilingiz",
     start: "Suhbatni boshlash",
     join: "Qo\u02bbshilish",
     codeLabel: "Suhbat kodi",
-    codePlaceholder: "masalan K4M2",
+    codePlaceholder: "K4M2",
     copy: "Havolani nusxalash",
     copied: "Nusxalandi",
     hold: "Bosib turing va gapiring",
-    speaking: "Gapiring — tugatgach qo\u02bbying",
+    speaking: "Gapiring — tugatgach qo\u02bbyib yuboring",
     sending: "Tarjima qilinmoqda…",
     waiting: "Boshqalar qo\u02bbshilishini kutyapmiz",
     nobodyYet: "Tugmani bosib turing va gapiring.",
