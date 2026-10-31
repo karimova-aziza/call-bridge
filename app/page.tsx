@@ -19,13 +19,19 @@ export default function Home() {
   const [lang, setLang] = useState<LangCode>("en");
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
+  const [topic, setTopic] = useState("");
 
   const t = UI[lang];
+  const picks = [t.topic1, t.topic2, t.topic3, t.topic4];
 
-  const go = (roomCode: string) =>
+  // Only the person who STARTS a call sets its topic. Joiners just enter a code.
+  const go = (roomCode: string, withTopic = false) => {
+    const topicPart =
+      withTopic && topic.trim() ? `&topic=${encodeURIComponent(topic.trim())}` : "";
     router.push(
-      `/room/${roomCode}?name=${encodeURIComponent(name.trim())}&lang=${lang}`,
+      `/room/${roomCode}?name=${encodeURIComponent(name.trim())}&lang=${lang}${topicPart}`,
     );
+  };
 
   return (
     <main className="home">
@@ -70,10 +76,36 @@ export default function Home() {
             />
           </div>
 
+          <div className="field-wrap">
+            <label className="field-label" htmlFor="topic">
+              {t.topicLabel}
+            </label>
+            <input
+              id="topic"
+              className="field-input"
+              value={topic}
+              maxLength={80}
+              placeholder={t.topicPlaceholder}
+              onChange={(e) => setTopic(e.target.value)}
+            />
+            <div className="topic-chips">
+              {picks.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  className={`topic-chip${topic === p ? " topic-chip--on" : ""}`}
+                  onClick={() => setTopic(topic === p ? "" : p)}
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <button
             className="btn-primary"
             disabled={!name.trim()}
-            onClick={() => go(makeCode())}
+            onClick={() => go(makeCode(), true)}
           >
             {t.start}
           </button>

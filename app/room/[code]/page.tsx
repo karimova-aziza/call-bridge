@@ -6,6 +6,7 @@ import { LANGS, isLang, type LangCode } from "@/lib/langs";
 import { UI } from "@/lib/ui";
 
 type Term = { word: string; explanation: string; original?: string };
+type Prep = { title: string; terms: Term[] };
 
 type Msg = {
   id: string;
@@ -36,6 +37,16 @@ function speak(text: string, lang: LangCode) {
   u.voice = match;
   u.lang = match.lang;
   u.rate = 0.95;
+  window.speechSynthesis.speak(u);
+}
+
+/* Reads an English term aloud, slowly, so a parent can hear what it sounds like. */
+function sayEnglish(text: string) {
+  if (typeof window === "undefined" || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-US";
+  u.rate = 0.85;
   window.speechSynthesis.speak(u);
 }
 
@@ -135,6 +146,7 @@ function Room() {
   const rawLang = search.get("lang") ?? "en";
   const lang: LangCode = isLang(rawLang) ? rawLang : "en";
   const name = search.get("name") || "Guest";
+  const topicParam = (search.get("topic") ?? "").slice(0, 80);
   const t = UI[lang];
 
   const [messages, setMessages] = useState<Msg[]>([]);
@@ -145,6 +157,8 @@ function Room() {
   const [recap, setRecap] = useState("");
   const [ending, setEnding] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [prep, setPrep] = useState<Prep | null>(null);
+  const [prepOpen, setPrepOpen] = useState(true);
 
   // Which term chip is currently expanded — tracks by message id + word
   const [expandedTerm, setExpandedTerm] = useState<{
@@ -170,6 +184,25 @@ function Room() {
     return out;
   }, [messages, lang]);
 
+  // The person who started the call tells the room what it is about.
+  useEffect(() => {
+    if (!topicParam) return;
+    fetch("/api/topic", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code, topic: topicParam }),
+    }).catch(() => {});
+  }, [code, topicParam]);
+
+  // Once people start talking, fold the prep card away to give the chat room.
+  const hasMessages = messages.length > 0;
+  useEffect(() => {
+    if (hasMessages) setPrepOpen(false);
+  }, [hasMessages]);
+
+  const prepLoaded = useRef(false);
+  const prepTries = useRef(0);
+  const prepLastTry = useRef(0);
   const recapRef = useRef<HTMLElement>(null);
   const cursor = useRef(0);
   const recorder = useRef<MediaRecorder | null>(null);
@@ -193,6 +226,30 @@ function Room() {
         const data = await res.json();
         setPeople(data.participants ?? []);
         setWhoSpeaking(data.speaking ?? null);
+
+        if (
+          data.hasTopic &&
+          lang !== "en" &&
+          !prepLoaded.current &&
+          prepTries.current < 3 &&
+          Date.now() - prepLastTry.current > 6000
+        ) {
+          prepTries.current += 1;
+          prepLastTry.current = Date.now();
+          fetch("/api/prep", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ code, lang }),
+          })
+            .then((r) => r.json())
+            .then((d) => {
+              if (d.prep) {
+                prepLoaded.current = true;
+                setPrep(d.prep);
+              }
+            })
+            .catch(() => {});
+        }
         if (data.messages?.length) {
           cursor.current = data.next;
           setMessages((prev) => [...prev, ...data.messages]);
@@ -314,6 +371,60 @@ function Room() {
       {error && <div className="notice">{error}</div>}
 
       <div className="feed">
+        {prep && (
+          <section className="prep">
+            <button
+              className="prep-head"
+              onClick={() => setPrepOpen((o) => !o)}
+              aria-expanded={prepOpen}
+            >
+              <span className="prep-label">{t.prepLabel}</span>
+              <span className="prep-title">{prep.title}</span>
+              <span className="prep-chevron" aria-hidden>
+                {prepOpen ? "−" : "+"}
+              </span>
+            </button>
+
+            {prepOpen && (
+              <>
+                <ul className="prep-list">
+                  {prep.terms.map((term) => {
+                    const english = term.original ?? term.word;
+                    return (
+                      <li key={english} className="prep-item">
+                        <div className="prep-row">
+                          <span className="prep-term">{english}</span>
+                          <button
+                            className="prep-listen"
+                            onClick={() => sayEnglish(english)}
+                            aria-label={`${t.listen}: ${english}`}
+                            title={t.listen}
+                          >
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+                              <path d="M2 6v4h2.5L8 13V3L4.5 6H2z" fill="currentColor" />
+                              <path
+                                d="M10.5 5.5a3.5 3.5 0 0 1 0 5M12 3.5a6 6 0 0 1 0 9"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                        {term.word.toLowerCase() !== english.toLowerCase() && (
+                          <div className="prep-word">{term.word}</div>
+                        )}
+                        <div className="prep-explain">{term.explanation}</div>
+                      </li>
+                    );
+                  })}
+                </ul>
+                <p className="prep-note">{t.prepNote}</p>
+              </>
+            )}
+          </section>
+        )}
+
         {!messages.length && (
           <p className="empty">
             {people.length < 2 ? t.waiting : t.nobodyYet}

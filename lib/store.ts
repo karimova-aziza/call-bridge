@@ -108,4 +108,48 @@ export async function getSpeaking(code: string): Promise<string | null> {
   return (memory.get(key) as string) ?? null;
 }
 
+/*
+ * Call topic + the generated pre-call prep. The prep is cached per room and per
+ * language, so a second person opening the same room never triggers a second
+ * model call.
+ */
+export type Prep = { title: string; terms: Term[] };
+
+async function setValue(key: string, value: string) {
+  if (redis) {
+    await redis.set(key, value, { ex: TTL });
+    return;
+  }
+  memory.set(key, value);
+}
+
+// Upstash may hand back JSON-looking strings already parsed, so this returns unknown.
+async function getValue(key: string): Promise<unknown> {
+  if (redis) return (await redis.get(key)) ?? null;
+  return memory.get(key) ?? null;
+}
+
+export async function setTopic(code: string, topic: string) {
+  await setValue(`room:${code}:topic`, topic);
+}
+
+export async function getTopic(code: string): Promise<string | null> {
+  const v = await getValue(`room:${code}:topic`);
+  return v === null || v === undefined ? null : String(v);
+}
+
+export async function setPrep(code: string, lang: LangCode, prep: Prep) {
+  await setValue(`room:${code}:prep:${lang}`, JSON.stringify(prep));
+}
+
+export async function getPrep(code: string, lang: LangCode): Promise<Prep | null> {
+  const v = await getValue(`room:${code}:prep:${lang}`);
+  if (!v) return null;
+  try {
+    return (typeof v === "string" ? JSON.parse(v) : v) as Prep;
+  } catch {
+    return null;
+  }
+}
+
 export const storeIsPersistent = hasRedis;

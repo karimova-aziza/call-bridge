@@ -36,6 +36,15 @@ type Strings = {
   reviewScore: string;
   reviewAgain: string;
   backToCall: string;
+  topicLabel: string;
+  topicPlaceholder: string;
+  topic1: string;
+  topic2: string;
+  topic3: string;
+  topic4: string;
+  prepLabel: string;
+  prepNote: string;
+  listen: string;
 };
 
 export const UI: Record<LangCode, Strings> = {
@@ -75,6 +84,15 @@ export const UI: Record<LangCode, Strings> = {
     reviewScore: "You knew {n} of {total}",
     reviewAgain: "Review again",
     backToCall: "Back to the call",
+    topicLabel: "What is the call about? (optional)",
+    topicPlaceholder: "e.g. financial aid",
+    topic1: "Financial aid",
+    topic2: "Course registration",
+    topic3: "Academic standing",
+    topic4: "Graduation requirements",
+    prepLabel: "Before the call",
+    prepNote: "A general guide. Your advisor may use these words a little differently.",
+    listen: "Listen",
   },
   ru: {
     appName: "Call Bridge",
@@ -112,6 +130,15 @@ export const UI: Record<LangCode, Strings> = {
     reviewScore: "Вы знали {n} из {total}",
     reviewAgain: "Повторить",
     backToCall: "Вернуться к разговору",
+    topicLabel: "О чём будет разговор? (по желанию)",
+    topicPlaceholder: "например, финансовая помощь",
+    topic1: "Финансовая помощь",
+    topic2: "Регистрация на курсы",
+    topic3: "Академическая успеваемость",
+    topic4: "Требования к выпуску",
+    prepLabel: "Перед разговором",
+    prepNote: "Общая подсказка. Преподаватель может использовать эти слова немного иначе.",
+    listen: "Слушать",
   },
   uz: {
     appName: "Call Bridge",
@@ -149,5 +176,14 @@ export const UI: Record<LangCode, Strings> = {
     reviewScore: "Siz {total} tadan {n} tasini bildingiz",
     reviewAgain: "Qayta ko\u02bbrib chiqish",
     backToCall: "Suhbatga qaytish",
+    topicLabel: "Suhbat nima haqida? (ixtiyoriy)",
+    topicPlaceholder: "masalan, moliyaviy yordam",
+    topic1: "Moliyaviy yordam",
+    topic2: "Kurslarga yozilish",
+    topic3: "Akademik holat",
+    topic4: "Bitirish talablari",
+    prepLabel: "Suhbatdan oldin",
+    prepNote: "Umumiy qo\u02bbllanma. Maslahatchi bu so\u02bblarni biroz boshqacha ishlatishi mumkin.",
+    listen: "Tinglash",
   },
 };
