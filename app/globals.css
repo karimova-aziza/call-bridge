@@ -1,5 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&display=swap");
 
+/* Uzbek oʻ / gʻ marks (U+02BB, U+02BC).
+   IBM Plex gives these a 0.6em advance, which renders as a gap before the mark.
+   These tiny subsets are Plex's own glyphs with the advance corrected; they only
+   apply to those two characters and sit first in the font stacks. */
+@font-face{font-family:'UzMarkSans';font-style:normal;font-weight:400;src:url(data:font/woff2;base64,d09GMgABAAAAAAIgAA4AAAAABBgAAAHMAAMzdQAAAAAAAAAAAAAAAAAAAAAAAAAAGyAcNgZgP1NUQVReADQRDAqBBHYBNgIkAwwLCAAEIAWBIAcgGw8DoJ6HsTGz6clGhC7GeXDKr+Lh//fHt89978sjvBHUICYwzVQiFGh1KRQ5j+M0Tc17TteZ2AqRzdRWqOMV+m+2Mx48DAYg0xENBzyJU627JIkzzAKVJLcxdLRdRlKjrQKV2ukgpk73MsDJ4X9AoNJgQ+XxTeq6/fcKrE07ugVY29e8O7AW5iBPzeOkEtK9dBhH7anx2dgYWB6pqiQrSZmUoQCAWZN9zaN0N93L498v8tXRhICUpzsoJCGUy9BMhr7S3k3jC3uwd/07woFiy65qhUMkpVroLEOKPnGSdA8hpBhsPSCTpBgKAiSOW4DnCuT/EaR7/5Pu/v93OghCUqHyf3UgA6XI0QHdATlIQuR5Y15VVlO6tqaketXh6xGHnvapunqz1aVrHLQqExYV1Rerl40p/sKqucrFFlVdJnyjh14bcYsGocVF5w65NazqFhDIhuz+smiiuKpu7G9OyL7Cm2azX8CXigN/FMStrBqlEggeHeKdQhFWvpJlweiZfp7qJ5BpXE7YK7MUFnmFpJZWRA/Vass+YwxUqQ0Gq9YVQ1QbuDpUpbHm6gw+q8qt1JkMRi9o0npbgcNtU1nZXvNJI6HWoR0G/jOWAA==) format('woff2');unicode-range:U+02BB-02BC;}
+@font-face{font-family:'UzMarkSans';font-style:normal;font-weight:500;src:url(data:font/woff2;base64,d09GMgABAAAAAAIsAA4AAAAABCAAAAHXAAMzdQAAAAAAAAAAAAAAAAAAAAAAAAAAGyAcNgZgP1NUQVRaADQRDAqBBHcBNgIkAwwLCAAEIAWBLAcgGxgDAJ4Hti1y70jRixbJqvHw/Nq3c9/M2vxFfQW1SDL1v1iC6k1CxLN5KKYVb9BW8r+1tFDHayXHlscPEQZBIJRRFwCmYWABTnAWqEzmOczxibBjowKFvvqLqdPnLlUthzaAQGG8ifLOpt5bThzea+COw9v2GLh3U3m/gase5Kl//FNBepDO4Jx+Znw1L8ZVRypVZBUpkzLUAcCsyfPqPEn304M8Wv+Sb4wuCEjV6R7qJCFUy9BVhpHSsR07yzGEY1vLO2Os2FXetDcmSCp11l9AjIp/CCHFeFuRSVJMBAES1y0gc3XIPyRID9qQ7rdpmS5ASGoUbXQAGahEjv4YAshBEiLPO+elqnaVm0sVxYYz1yNOv1e6erNn1zhlw9JiRV3tldrZc1sPt9oxu+/vXu2GDJx1adrSy7sWj+xS6vXb7V/OrHkJBLIJTd8uri42dJj0v7rIfsC7rgtfwfeak83qiDtZN1RKIHi1iw/q1DXwIweALN3/zShfjBLIdJZAQFWV1TKR10ja41UMUas9RlFvHqswmMerNRYTaNIZExVmWmybHZrstclhK2yzyw47lc2zzVa7NNlnhV22KttpvgMO22eTvWYp67jLFosdSC7tlwFtm4cAAA==) format('woff2');unicode-range:U+02BB-02BC;}
+@font-face{font-family:'UzMarkSans';font-style:normal;font-weight:600;src:url(data:font/woff2;base64,d09GMgABAAAAAAI4AA4AAAAABCQAAAHjAAMzdQAAAAAAAAAAAAAAAAAAAAAAAAAAGyAcNgZgP1NUQVRaADQRDAqBBHcBNgIkAwwLCAAEIAWBMAcgGxwDCK4KbGPlYG9geBAJMtZyJKEuF2f4sfFAvz++c+97X0RcqxmVjDs7fUORExgKmddxm3z4eb0/MDShrpQ1nFRn1XIIJ7tcbaTCpugHqjpBhTue/7VFtjwOInwIAqGMugADS7m7BAY4wdlAZTKoHfINS5zkJS0tFZCrXqMwY9bpBUEK/wECco0al3o3KbN/7eHdjqKD9+v3Ed6Q9Glsj8uwxHvxJE7xmeGzX4xkh5iXkWTEREzQDABz82x5FO/Ge2n49wvSdaEMAWJuvINmURBkS1AuQb+4d2u9ky727l6TYWH7rqQnY6JMpRoFCINxGQiCGEZtAokohnEQQOTAAmWqGemHBOK9/4h3//vbCAiiHLn/KQIJyESKRnQBUhAFIU1L07ysgswNeRm5a0/eCeH4276885erz1zhmLVKS5vzT+dPXvp11Vd9mQV1BX0d13ML+x98uFyuK/DgxMdmPQYISMZ2n/jfzbVM+C3kJl+BN+VLXgBfcg78YRFuJU3IFEHgbxfesTRbxVfJEmP6yveTLyBRupKoy7ICLaQ5okIqFbrkK8SgYrUYlqsXo/KN0xhP2WdcrgUeCpVDL7H6KjQqtd1TYdAITHq5r0ZuV7uYrAaJXmhnbGQepvbQiAb+b5kAAA==) format('woff2');unicode-range:U+02BB-02BC;}
+@font-face{font-family:'UzMarkSans';font-style:normal;font-weight:700;src:url(data:font/woff2;base64,d09GMgABAAAAAAIgAA4AAAAABBAAAAHJAAMzdQAAAAAAAAAAAAAAAAAAAAAAAAAAGyAcNgZgP1NUQVRaADQRDAqBBHcBNgIkAwwLCAAEIAWBGgcgGwYDCB6nK/qIvM2VFEG1Rvbs3SMFiMCmUj4ykj2wMEiKNTnq/9J230VVaLbjwQgGD4OB0Ix2Awws1brrugsswyxQSYK6oRgWdUmfZLFVoFQLrcSESTMWKJbDf4BAqX4GyLWbmq0/um+HDpv3bdyuw461B3bpMFyDPHVLdxSQ7qRzOM9nxkcbol9xpLKCrCBlUoY2ADB13Mw2Lqbb6U4e/06+JuoQkCrSLbSRhFAsQ70MPaTDm7cciM4c3nBgS/QRWw+s3RH9JYVqtRIQvdMdhJCinw3IJCkGgACJAw/qXBvkHxKkO/+Rbv/3d5IAISlR+p8qkIFC5GiFzoAcJCHyvDYvK6ooXFdWULr63K2Is6+7l1261qTrnLmxWuniNuUXyvuvfzLhiX2j285uVdmr08IbCz86+XBCo7JWsz3+NPbV2oJXQCDrf7BzxeBdq6tG/C4uzb7Dq/o5z+BbybE/2hA3sq5CoQSCv0O80UYbqfJd8kwY/dDTXz0FMrUrBe8VWSYTeYmkmMpEZ+WK0Vsx6KNUPfop14r6c7f5AUoNMs5uO2yw2EZbbbbFAZOtNjjQmmW3fXZaa4epDjBvtd48u9tDu2TA/9kgAAAAAA==) format('woff2');unicode-range:U+02BB-02BC;}
+@font-face{font-family:'UzMarkSerif';font-style:normal;font-weight:400;src:url(data:font/woff2;base64,d09GMgABAAAAAAGQAA0AAAAAAwgAAAFCAAIBiQAAAAAAAAAAAAAAAAAAAAAAAAAAGyAcMAZgADQREAqBAHYBNgIkAwwLCAAEIAUGByAbFQIgngfZOeW0dGfjDdJH8QDtj3ozfxbCiQ1WApCNEu0oNYXCfG2R/7J6GZanXJXtbnAGAaYYYeCaZRbooDpsjI0rCLnqBRRq1ipMnT53qXwJugESMthQ2a56fft2aN3hwC6teQYpbgmX5RDPxpWYo68PqwwOw4i5OVlOyhUztAPArMnz2sPE+Dy+SKEr6WBoRYCY4jO0i4jIUC0TUC1pR5IE4otuxOfdOqcLIMjkK1Qup5sykIFcJLSiLyCBKAgpVaaivJLcdSU5xavPXgvhyLdBRVdu1J+7yuErq4uWFrYXXy5eP2jkg5HWzKp/WZPX3mvW/Xrd2tD0oTbVfDDy36KJj5uBgBjOnKyuO7y6bOz//KLsN/x8Ywn8KqhDO+FOVowCEQQuWYSv2rWHOwKcjWdfGeKxIQIylSIIQK6M6t5gAA==) format('woff2');unicode-range:U+02BB-02BC;}
+@font-face{font-family:'UzMarkSerif';font-style:italic;font-weight:400;src:url(data:font/woff2;base64,d09GMgABAAAAAAGgAA0AAAAAAxQAAAFRAAIBiQAAAAAAAAAAAAAAAAAAAAAAAAAAGyAcMAZgADQREAqBDH0BNgIkAwwLCAAEIAUGByAbHAIIHomxrYbtFaG4VlOLAFr73+zefXPULZlLgxBFrUOj41n8ZXslfP7Ly3rATbaYdmLVWSl6wcaYYwYt6WYVkK+WOsKgIaMmyZVCBiAgXyttJC5Xac6m1UvVWTpr7XJ1Fg3S2C2clEU8HKdlGNkfMDVM1yp0JmZnJVlptpigHgAMHzC6XgjxfnyQhv9It4c6CBDTeA/1REQkqCQRUEmqHlKpQHyQQbyf8W+IAIJErnylsjKUgARkI0UDNAekIApCmlZJC3KKsmcXZRXOOHwu7Kp66vL581ULzjypduSsnZVOn5lRMCm/XuHCwp4tS2+UmjyuYlJpfsu+lm++10TpnpKOxXk9+z0z5+ukpbfrAAExHFrV7c0zSnp9yy1IPsG7142Fj3mb/6lHOJgUivJEEPgD4Yx66in+yW8AkIjZt1p7r7WARBURBFHKlpCZTFoBAAA=) format('woff2');unicode-range:U+02BB-02BC;}
+@font-face{font-family:'UzMarkSerif';font-style:normal;font-weight:500;src:url(data:font/woff2;base64,d09GMgABAAAAAAGUAA0AAAAAAwgAAAFEAAIBiQAAAAAAAAAAAAAAAAAAAAAAAAAAGyAcMAZgADQREAqBAHYBNgIkAwwLCAAEIAUGByAbFQIgngd2rHgQxWb5aATw+/tvzrn3A14aEUCkQgQz4jptcyfi7kso0uqaOivffzc4gwBTjDBwzTILdFAdNsbGFYRc9QLyNWoWxk2YNk+uFDIBCemmh2RXuXbP1vWa16/evlFznkEat4c/sojH4iJM1deHFfqFQcTs7CQrzRYTtAKAyWOmtwqj4v34IA3/v5IeDM0IEHPjPbQSEZGgUiKgUqoVUqlAfJBJvJ/5b4IAgkSufKWyMpWABGQjRTM6AFIQBSFNy9OCnKLsNUVZhSuP3Q7hyMuuBVfv1h6/xeGbKwvm5bcqPFO4tG+nOlk3uuV3XU6HDt71abvmn3VJ/U/9P5/8sAMQEMPRwgv5V1aWDPubW5B8gDdPLs6G93l7/2lFuJvUI08EgUsW4YVWWoW7ApyMZ1/p7rnuAhLlIghAtoTK0A8AAAA=) format('woff2');unicode-range:U+02BB-02BC;}
+
 /* ── Design tokens ── */
 :root {
   --ink:        #1a2019;
@@ -16,8 +28,8 @@
   --ru:   #6b4a85;
   --uz:   #2e7a52;
 
-  --sans:  "IBM Plex Sans", system-ui, sans-serif;
-  --serif: "IBM Plex Serif", Georgia, serif;
+  --sans:  "UzMarkSans", "IBM Plex Sans", system-ui, sans-serif;
+  --serif: "UzMarkSerif", "IBM Plex Serif", Georgia, serif;
 
   --sh-sm: 0 1px 3px rgba(26,32,25,.07), 0 1px 2px rgba(26,32,25,.04);
   --sh-md: 0 4px 14px rgba(26,32,25,.09), 0 2px 4px rgba(26,32,25,.04);
@@ -184,6 +196,7 @@ input, select { font: inherit; }
 
 .code-input {
   flex: 1;
+  min-width: 0; /* without this the input keeps its default width and pushes Join off the card on phones */
   padding: 13px 14px;
   font-size: 22px;
   font-weight: 700;
@@ -558,4 +571,113 @@ input, select { font: inherit; }
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
   }
+}
+
+
+/* ════════════════════════════════════════════
+   POST-CALL REVIEW CARDS
+════════════════════════════════════════════ */
+
+.letter { scroll-margin-top: 84px; }
+
+.review {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 18px;
+  margin-top: 6px;
+  box-shadow: var(--sh-sm);
+}
+
+.review-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 14px;
+}
+.review-count { letter-spacing: 0.04em; font-weight: 600; color: var(--ink-faint); }
+
+.flash {
+  display: block;
+  width: 100%;
+  min-height: 190px;
+  padding: 26px 22px;
+  text-align: left;
+  background: var(--paper-warm);
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: border-color 120ms, background 120ms;
+}
+.flash:hover { border-color: var(--ink-faint); }
+.flash--back { background: #fff; border-left: 4px solid var(--uz); }
+.flash span { display: block; }
+
+.flash-term {
+  font-family: var(--serif);
+  font-size: 28px;
+  line-height: 1.25;
+  font-weight: 500;
+  color: var(--ink);
+}
+.flash-hint { margin-top: 14px; font-size: 13px; color: var(--ink-faint); }
+
+.flash-small {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 8px;
+}
+.flash-meaning {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--uz);
+  margin-bottom: 10px;
+}
+.flash-explain {
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.review-hint { margin-top: 12px; font-size: 13px; color: var(--ink-soft); text-align: center; }
+
+.flash-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+.flash-actions button { padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 600; }
+.flash-no  { background: var(--paper); border: 1.5px solid var(--line); color: var(--ink); }
+.flash-yes { background: var(--uz); color: #fff; }
+
+.review-done { text-align: center; padding: 14px 0 6px; }
+.review-score { font-family: var(--serif); font-size: 24px; line-height: 1.3; margin-bottom: 16px; }
+.btn-again {
+  padding: 12px 22px;
+  border-radius: 12px;
+  border: 1.5px solid var(--line);
+  background: var(--paper);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* After the recap is shown the speak button steps aside, so nobody studies the
+   cards with it pinned over them (or presses it by accident). */
+.talkbar--ended { padding-top: 12px; padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px)); text-align: center; }
+.btn-back {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1.5px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 600;
 }

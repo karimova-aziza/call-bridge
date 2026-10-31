@@ -67,8 +67,9 @@ TASK 2 — EXTRACT KEY TERMS
 Identify 0 to 3 terms from this turn that a non-native speaker or parent might not understand. Only flag: institutional vocabulary, acronyms, degree/credit terminology, financial terms, or culturally specific phrases. Do NOT flag common conversational words.
 
 For each term, provide:
-- The term itself in each target language (as it appears in your translation)
-- A plain 1–2 sentence explanation in each target language, written for a parent with no university background
+- "original": the term exactly as the speaker said it, in ${LANGS[sourceLang].name}
+- "word": the same term as it appears in your translation, in each target language
+- "explanation": a plain 1–2 sentence explanation in each target language, written for a parent with no university background
 
 If no important terms exist in this turn, omit "terms" from your response entirely.
 
@@ -80,9 +81,9 @@ Required shape (fill in all ${targetKeys} keys):
   "ru": "<translation in Russian if Russian is a target>",
   "uz": "<translation in Uzbek if Uzbek is a target>",
   "terms": {
-    "en": [{"word": "<term>", "explanation": "<plain explanation in English>"}],
-    "ru": [{"word": "<term>", "explanation": "<plain explanation in Russian>"}],
-    "uz": [{"word": "<term>", "explanation": "<plain explanation in Uzbek>"}]
+    "en": [{"original": "<term as spoken>", "word": "<term>", "explanation": "<plain explanation in English>"}],
+    "ru": [{"original": "<term as spoken>", "word": "<term>", "explanation": "<plain explanation in Russian>"}],
+    "uz": [{"original": "<term as spoken>", "word": "<term>", "explanation": "<plain explanation in Uzbek>"}]
   }
 }
 

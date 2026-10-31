@@ -4,6 +4,8 @@ import type { LangCode } from "./langs";
 export type Term = {
   word: string;
   explanation: string;
+  /** The term as the speaker said it (e.g. the English word). Optional so older messages still load. */
+  original?: string;
 };
 
 export type Message = {

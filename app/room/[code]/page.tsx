@@ -1,11 +1,11 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { LANGS, isLang, type LangCode } from "@/lib/langs";
 import { UI } from "@/lib/ui";
 
-type Term = { word: string; explanation: string };
+type Term = { word: string; explanation: string; original?: string };
 
 type Msg = {
   id: string;
@@ -39,6 +39,95 @@ function speak(text: string, lang: LangCode) {
   window.speechSynthesis.speak(u);
 }
 
+/*
+ * Flashcards built from the terms flagged during the call.
+ *
+ * Front: the term as the parent actually HEARD it (e.g. the English word) —
+ * that is what she needs to recognise next time without a translation.
+ * Back: the same word in her language, plus the plain explanation.
+ * She then says whether she knew it. That self-check is the first, rough
+ * measure of vocabulary recognition for the capstone.
+ */
+function ReviewCards({ terms, t }: { terms: Term[]; t: (typeof UI)[LangCode] }) {
+  const [i, setI] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+  const [known, setKnown] = useState<Record<string, boolean>>({});
+
+  const done = i >= terms.length;
+  const card = terms[Math.min(i, terms.length - 1)];
+  const front = card.original || card.word;
+  const hasMeaning = card.word.toLowerCase() !== front.toLowerCase();
+  const score = Object.values(known).filter(Boolean).length;
+
+  const mark = (ok: boolean) => {
+    setKnown((k) => ({ ...k, [card.word]: ok }));
+    setFlipped(false);
+    setI((n) => n + 1);
+  };
+  const restart = () => {
+    setI(0);
+    setFlipped(false);
+    setKnown({});
+  };
+
+  return (
+    <section className="review" aria-label={t.reviewTitle}>
+      <div className="review-head">
+        <span>{t.reviewTitle}</span>
+        <span className="review-count">
+          {done ? terms.length : i + 1} / {terms.length}
+        </span>
+      </div>
+
+      {!done ? (
+        <>
+          <button
+            className={`flash${flipped ? " flash--back" : ""}`}
+            onClick={() => setFlipped((f) => !f)}
+          >
+            {!flipped ? (
+              <>
+                <span className="flash-term">{front}</span>
+                <span className="flash-hint">{t.tapReveal}</span>
+              </>
+            ) : (
+              <>
+                <span className="flash-small">{front}</span>
+                {hasMeaning && <span className="flash-meaning">{card.word}</span>}
+                <span className="flash-explain">{card.explanation}</span>
+              </>
+            )}
+          </button>
+
+          {flipped ? (
+            <div className="flash-actions">
+              <button className="flash-no" onClick={() => mark(false)}>
+                {t.notYet}
+              </button>
+              <button className="flash-yes" onClick={() => mark(true)}>
+                {t.knew}
+              </button>
+            </div>
+          ) : (
+            <p className="review-hint">{t.reviewHint}</p>
+          )}
+        </>
+      ) : (
+        <div className="review-done">
+          <div className="review-score">
+            {t.reviewScore
+              .replace("{n}", String(score))
+              .replace("{total}", String(terms.length))}
+          </div>
+          <button className="btn-again" onClick={restart}>
+            {t.reviewAgain}
+          </button>
+        </div>
+      )}
+    </section>
+  );
+}
+
 function Room() {
   const params = useParams<{ code: string }>();
   const search = useSearchParams();
@@ -62,8 +151,26 @@ function Room() {
     msgId: string;
     word: string;
     explanation: string;
+    original?: string;
   } | null>(null);
 
+  // Every term flagged for ME during this call, de-duplicated, in the order heard.
+  const reviewTerms = useMemo(() => {
+    const seen = new Set<string>();
+    const out: Term[] = [];
+    for (const m of messages) {
+      for (const term of m.terms?.[lang] ?? []) {
+        const key = (term.original || term.word).trim().toLowerCase();
+        if (!seen.has(key)) {
+          seen.add(key);
+          out.push(term);
+        }
+      }
+    }
+    return out;
+  }, [messages, lang]);
+
+  const recapRef = useRef<HTMLElement>(null);
   const cursor = useRef(0);
   const recorder = useRef<MediaRecorder | null>(null);
   const chunks = useRef<BlobPart[]>([]);
@@ -104,6 +211,10 @@ function Room() {
   useEffect(() => {
     feedEnd.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages.length, whoSpeaking]);
+
+  useEffect(() => {
+    if (recap) recapRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [recap]);
 
   const broadcastSpeaking = useCallback((active: boolean) => {
     fetch("/api/speaking", {
@@ -257,6 +368,7 @@ function Room() {
                                   msgId: m.id,
                                   word: term.word,
                                   explanation: term.explanation,
+                                  original: term.original,
                                 },
                           )
                         }
@@ -269,7 +381,12 @@ function Room() {
                   {/* Expanded explanation card */}
                   {expandedTerm?.msgId === m.id && (
                     <div className="term-card">
-                      <strong>{expandedTerm.word}</strong>{" "}
+                      <strong>{expandedTerm.word}</strong>
+                      {expandedTerm.original &&
+                      expandedTerm.original.toLowerCase() !==
+                        expandedTerm.word.toLowerCase()
+                        ? ` (${expandedTerm.original})`
+                        : ""}{" "}
                       — {expandedTerm.explanation}
                     </div>
                   )}
@@ -288,7 +405,7 @@ function Room() {
         )}
 
         {recap && (
-          <section className="letter">
+          <section className="letter" ref={recapRef}>
             <div className="letter-head">{t.recapTitle}</div>
             <div className="recap">{recap}</div>
             <div className="letter-foot">
@@ -305,9 +422,26 @@ function Room() {
           </section>
         )}
 
+        {recap && reviewTerms.length > 0 && (
+          <ReviewCards terms={reviewTerms} t={t} />
+        )}
+
         <div ref={feedEnd} />
       </div>
 
+      {recap ? (
+        <div className="talkbar talkbar--ended">
+          <button
+            className="btn-back"
+            onClick={() => {
+              setRecap("");
+              setCopied(false);
+            }}
+          >
+            {t.backToCall}
+          </button>
+        </div>
+      ) : (
       <div className="talkbar">
         <button
           className="talk"
@@ -327,6 +461,7 @@ function Room() {
           </button>
         </div>
       </div>
+      )}
     </div>
   );
 }

@@ -28,6 +28,14 @@ type Strings = {
   recapCopied: string;
   recapFor: string;
   speakingSuffix: string;
+  reviewTitle: string;
+  reviewHint: string;
+  tapReveal: string;
+  knew: string;
+  notYet: string;
+  reviewScore: string;
+  reviewAgain: string;
+  backToCall: string;
 };
 
 export const UI: Record<LangCode, Strings> = {
@@ -59,6 +67,14 @@ export const UI: Record<LangCode, Strings> = {
     recapCopied: "Copied",
     recapFor: "Keep this or send it on",
     speakingSuffix: "is speaking",
+    reviewTitle: "Words from this call",
+    reviewHint: "Tap a card to see what it means.",
+    tapReveal: "Tap to see the meaning",
+    knew: "I knew this",
+    notYet: "Not yet",
+    reviewScore: "You knew {n} of {total}",
+    reviewAgain: "Review again",
+    backToCall: "Back to the call",
   },
   ru: {
     appName: "Call Bridge",
@@ -88,6 +104,14 @@ export const UI: Record<LangCode, Strings> = {
     recapCopied: "Скопировано",
     recapFor: "Сохраните или перешлите",
     speakingSuffix: "говорит",
+    reviewTitle: "Слова из этого разговора",
+    reviewHint: "Нажмите на карточку, чтобы увидеть значение.",
+    tapReveal: "Нажмите, чтобы увидеть значение",
+    knew: "Знаю",
+    notYet: "Ещё нет",
+    reviewScore: "Вы знали {n} из {total}",
+    reviewAgain: "Повторить",
+    backToCall: "Вернуться к разговору",
   },
   uz: {
     appName: "Call Bridge",
@@ -117,5 +141,13 @@ export const UI: Record<LangCode, Strings> = {
     recapCopied: "Nusxalandi",
     recapFor: "Saqlab qo\u02bbyish yoki yuborish uchun",
     speakingSuffix: "gapirmoqda",
+    reviewTitle: "Suhbatdagi so\u02bblar",
+    reviewHint: "Ma\u02bcnosini ko\u02bbrish uchun kartani bosing.",
+    tapReveal: "Ma\u02bcnosini ko\u02bbrish uchun bosing",
+    knew: "Bilaman",
+    notYet: "Hali yo\u02bbq",
+    reviewScore: "Siz {total} tadan {n} tasini bildingiz",
+    reviewAgain: "Qayta ko\u02bbrib chiqish",
+    backToCall: "Suhbatga qaytish",
   },
 };
